@@ -27,13 +27,13 @@ void ds12887_init()
 {
 	uint8_t data = 0x00;
 	//set ctrl port to outpu
-//	DDR(CTRL_PORT)  |= _BV(CTRL_AS);
-//    DDR(CTRL_PORT)  |= _BV(CTRL_DS);
-//    DDR(CTRL_PORT)  |= _BV(CTRL_RW);
-	DDRE = 0xFF;
-    PORTE &= ~(_BV(CTRL_AS));
-	PORTC &= ~(_BV(CTRL_DS));
-	PORTC &= ~(_BV(CTRL_RW));
+	DDR(CTRL_PORT)  |= _BV(CTRL_AS);
+    DDR(CTRL_PORT)  |= _BV(CTRL_DS);
+    DDR(CTRL_PORT)  |= _BV(CTRL_RW);
+//	DDRE = 0xFF;
+//    PORTE &= ~(_BV(CTRL_AS));
+//	PORTC &= ~(_BV(CTRL_DS));
+//	PORTC &= ~(_BV(CTRL_RW));
 
     //start oscillator and set in BCM mode
     do{
@@ -121,22 +121,22 @@ uint8_t ds12887_read_address(uint8_t addr)
 	 // rtc_tris=0b11100000;//set the tris of C for setting address
 	  //rtc_tris.ad=0x00; //set the tris of D for setting address
 	  //rtc     =0b00011110;//set C for for setting address
-	PORTE |= _BV(CTRL_AS);
-	PORTE |= _BV(CTRL_RW);
-	PORTE |= _BV(CTRL_DS);
+	PORTB |= _BV(CTRL_AS);
+	PORTB |= _BV(CTRL_RW);
+	PORTB |= _BV(CTRL_DS);
 //	  rtc.ad=addr;      //put address on bus
 	PORTC = addr;
 	_delayFourCycles(1);
 //	  #asm nop #endasm    //pause
 //	rtc.as=0;           //latch
-	PORTE &= ~(_BV(CTRL_AS));
+	PORTB &= ~(_BV(CTRL_AS));
 	_delayFourCycles(1); // pause
 //	  rtc_tris.ad=0xFF; //set the tris of D for reading data
 	PORTC = 0x00;
 	DDRC = 0x00;
 
 //	  rtc.ds=0;           //release
-	  PORTE &= ~(_BV(CTRL_DS));
+	  PORTB &= ~(_BV(CTRL_DS));
 //	  #asm nop #endasm    //pause
 	  _delayFourCycles(1);
 //	  data=rtc.ad;      //read the data from the bus
@@ -195,27 +195,27 @@ uint8_t ds12887_write_address(uint8_t data, uint8_t addr)
 //	  rtc.ad=addr; //addr is on bus
 	  PORTC = addr;//util_create_addr(addr);
 //	  rtc.rw_bar=0;//write mode
-	  PORTE &= ~(_BV(CTRL_RW));
+	  PORTB &= ~(_BV(CTRL_RW));
 
 //	  rtc.ds=0;    //data strob idle
-	  PORTE &= ~(_BV(CTRL_DS));
+	  PORTB &= ~(_BV(CTRL_DS));
 
 //	  rtc.as=1;    //addr strob
-	  PORTE |= _BV(CTRL_AS);
+	  PORTB |= _BV(CTRL_AS);
 
 	  _delayFourCycles(1); // pause
 
 //	  rtc.as=0;    //latch address
-	  PORTE &= ~(_BV(CTRL_AS));
+	  PORTB &= ~(_BV(CTRL_AS));
 
 //	  rtc.ds=1;    //data strob idle
-	  PORTE |= _BV(CTRL_DS);
+	  PORTB |= _BV(CTRL_DS);
 
 //	  rtc.ad=data; //data is on bus
 	  PORTC = data;
 	  _delayFourCycles(1);
 //	  rtc.ds=0;    //latch data
-	  PORTE &= ~(_BV(CTRL_DS));
+	  PORTB &= ~(_BV(CTRL_DS));
 
 //	  rtc_tris_r(); //set the tris of C  and D to ALL INPUTS
 	  DDRC = 0x00;

@@ -20,10 +20,10 @@ extern "C" {
 
 #ifdef OW_ONE_BUS
 
-#define OW_PIN  PD7
-#define OW_IN   PIND
-#define OW_OUT  PORTD
-#define OW_DDR  DDRD
+#define OW_PIN  PB2
+#define OW_IN   PINB
+#define OW_OUT  PORTB
+#define OW_DDR  DDRB
 #define OW_CONF_DELAYOFFSET 0
 
 #else 

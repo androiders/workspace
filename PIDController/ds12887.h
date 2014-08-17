@@ -16,7 +16,7 @@
 
 #define DDR(x) (*(&x - 1))      /* address of data direction register of port x */
 
-#define CTRL_PORT 	PORTE
+#define CTRL_PORT 	PORTD
 #define DATA_PORT 	PORTC
 #define DATA_IN_PORT 	PINC
 #define DATA_D0 	7

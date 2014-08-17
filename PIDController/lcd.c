@@ -497,7 +497,7 @@ void lcd_puts(const char *s)
 /**
  * display number
  */
-void lcd_put_num(const uint8_t n)
+void lcd_put_num(const uint16_t n)
 {
 	char buf[10];
 	itoa(n,buf,10);

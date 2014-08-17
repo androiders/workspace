@@ -88,10 +88,10 @@
 #define LCD_DATA1_PORT   LCD_PORT     /**< port for 4bit data bit 1 */
 #define LCD_DATA2_PORT   LCD_PORT     /**< port for 4bit data bit 2 */
 #define LCD_DATA3_PORT   LCD_PORT     /**< port for 4bit data bit 3 */
-#define LCD_DATA0_PIN    4            /**< pin for 4bit data bit 0  */
-#define LCD_DATA1_PIN    5            /**< pin for 4bit data bit 1  */
-#define LCD_DATA2_PIN    6            /**< pin for 4bit data bit 2  */
-#define LCD_DATA3_PIN    7            /**< pin for 4bit data bit 3  */
+#define LCD_DATA0_PIN    3            /**< pin for 4bit data bit 0  */
+#define LCD_DATA1_PIN    4            /**< pin for 4bit data bit 1  */
+#define LCD_DATA2_PIN    5            /**< pin for 4bit data bit 2  */
+#define LCD_DATA3_PIN    6            /**< pin for 4bit data bit 3  */
 #define LCD_RS_PORT      LCD_PORT    /**< port for RS line         */
 #define LCD_RS_PIN       0            /**< pin  for RS line         */
 #define LCD_RW_PORT      LCD_PORT     /**< port for RW line         */
@@ -233,7 +233,7 @@ extern void lcd_puts(const char *s);
  @param    n the number to be displayed
  @return   none
 */
-extern void lcd_put_num(const uint8_t n);
+extern void lcd_put_num(const uint16_t n);
 
 
 /**
