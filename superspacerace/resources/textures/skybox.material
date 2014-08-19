@@ -1,0 +1,14 @@
+material skybox
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				//cubic_texture space.jpg separateUV
+				cubic_texture space_up.jpg space_dn.jpg space_fn.jpg space_rt.jpg space_bk.jpg space_lt.jpg separateUV
+			}
+		}
+	}
+}

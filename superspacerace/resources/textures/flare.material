@@ -1,0 +1,16 @@
+material flare
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+       			depth_write off
+			lighting off
+			texture_unit
+			{
+				texture flare.png
+			}
+		}
+	}
+}

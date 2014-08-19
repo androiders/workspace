@@ -1,0 +1,12 @@
+material _missing_material_
+{
+	technique
+	{
+		pass
+		{
+			lighting on
+			diffuse 0.000000 0.800000 0.800000
+			ambient 0.5 0 0
+		}
+	}
+}

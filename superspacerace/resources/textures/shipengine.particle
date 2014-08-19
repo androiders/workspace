@@ -1,0 +1,35 @@
+particle_system ShipEngine
+{
+    material        flare
+    particle_width  1.5
+    particle_height 1.5
+    cull_each       false
+    quota           500
+    billboard_type  point
+ 
+    // Area emitter
+    emitter Ellipsoid
+    {
+        angle           5
+        emission_rate   300
+        time_to_live_min 0.1
+        time_to_live_max 0.4
+        direction       0 0 1
+        velocity       80.01
+        //colour 0.6 0.6 0.3
+	colour_range_start 1 1 1
+	colour_range_end 1 1 1 
+        width           3
+        height          3
+        depth           3
+    }
+ 
+    // Fader
+    affector ColourFader
+    {
+        red -4.9
+        green -4.9
+        blue 0
+	alpha -2.0
+    }
+ }
