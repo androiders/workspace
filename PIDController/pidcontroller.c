@@ -4,9 +4,9 @@
  *  Created on: 16 nov 2013
  *      Author: androiders
  */
-#include <avr/io.h>
+
 #include <stdio.h>
-#include <stdlib.h>
+
 #include <string.h>
 #include <avr/pgmspace.h>
 #include "lcd.h"
@@ -14,11 +14,12 @@
 #include "ds18x20.h"
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include "buttons.h"
+//TODO: move to .h file
 
-//inputs
-#define OK PD0
-#define UP PD2
-#define DOWN PD4
+
+
+
 
 #define MAXSENSORS 5
 #define TMP_PIN PB2
@@ -43,6 +44,7 @@ uint8_t gSensorIDs[MAXSENSORS][OW_ROMCODE_SIZE];
 volatile uint8_t sec;
 volatile uint8_t min;
 
+//tiemr1 set up as 1 sec clock
 ISR(TIMER1_COMPA_vect)
 {
 	//count seconds and store minutes
@@ -54,79 +56,8 @@ ISR(TIMER1_COMPA_vect)
 	}
 }
 
-void waitForOk()
-{
-	while( (PIND & _BV(OK)) == 0);
-}
-
-void setMashTimeLoop()
-{
-	uint8_t done = 0;
-	uint8_t input = 0;
-
-	while( !done )
-	{
-		_delay_ms(200);
-		lcd_gotoxy(5,1);
-		lcd_put_num(mashTime);
-		lcd_puts("    ");
-		if(input & _BV(UP))
-		{
-			mashTime += 10;
-		}
-		if(input & _BV(DOWN))
-		{
-			mashTime -= 10;
-		}
-		if(input & _BV(OK))
-		{
-			done = 1;
-		}
-		if(mashTime < 0)
-			mashTime = 0;
-		if(mashTime > 180)
-			mashTime = 180;
-		input = PIND;
-
-	}
-}
 
 
-void setMashTempLoop()
-{
-	uint8_t done = 0;
-	uint8_t input = 0;
-
-	while( !done )
-	{
-		_delay_ms(200);
-		lcd_gotoxy(0,1);
-		lcd_put_num(mashTemp);
-		lcd_putc('(');
-		lcd_put_num(initialMashTemp);
-		lcd_putc(')');
-		if(input & _BV(UP))
-		{
-			mashTemp += 1;
-		}
-		if(input & _BV(DOWN))
-		{
-			mashTemp -= 1;
-		}
-		if(input & _BV(OK))
-		{
-			done = 1;
-		}
-//		if(mashTemp < 51)
-//			mashTemp = 50;
-		if(mashTemp >= 99)
-			mashTemp = 99;
-
-		initialMashTemp = mashTemp+3;
-		input = PIND;
-
-	}
-}
 
 
 static uint8_t search_sensors(void)
@@ -168,6 +99,7 @@ void turn_on_mash_heater()
 
 }
 
+
 void turn_off_mash_heater()
 {
 	PORTC &= ~_BV(MASH_HEAT);
@@ -176,6 +108,7 @@ void turn_off_mash_heater()
 
 int main(void)
 {
+
 	state = STATE_STARTUP;
 	sec = 0;
 	min = 0;
