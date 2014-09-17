@@ -56,7 +56,15 @@ ISR(TIMER1_COMPA_vect)
 	}
 }
 
-
+//tiemr2 set up as non-inverting fast pwm
+//controlls the pump in the system
+//initially set to 50% duty cycle
+ISR(TIMER2_COMP_vect)
+{
+	//check if pump value is increased
+	//set new pump value
+	//in output compare register 0
+}
 
 
 
@@ -106,6 +114,30 @@ void turn_off_mash_heater()
 }
 
 
+void setupTimers()
+{
+	// Configure timer 1 for CTC mode
+	TCCR1B |= (1 << WGM12);
+	// Enable CTC interrupt
+	TIMSK |= (1 << OCIE1A);
+	// Set CTC compare value to 1Hz at 1MHz AVR clock, with a prescaler of 64
+	OCR1A   = 15624;
+	// Start timer at Fcpu/64
+	TCCR1B |= ((1 << CS10) | (1 << CS11));
+
+	//set non-invertin fast PWM mode for timer 2
+	TCCR2 |= ((1 << WGM21) | (1 << WGM20) | (1 << COM21));
+	//set prescaler to 1024 (frequency is then 1MHz/1024)
+	TCCR2 |= ((1 << CS02) | (1 << CS00));
+	//initially 50% duty
+	OCR2 = 128;
+	//output compare interrupt enable
+	TIMSK |= (1 << OCIE0);
+
+	sei();
+
+}
+
 int main(void)
 {
 
@@ -120,14 +152,6 @@ int main(void)
 	//PORTC &= ~_BV(MASH_HEAT);
 	PORTC = 0x00;
 
-	TCCR1B |= (1 << WGM12); // Configure timer 1 for CTC mode
-
-	TIMSK |= (1 << OCIE1A); // Enable CTC interrupt
-
-	sei();
-
-	OCR1A   = 15624; // Set CTC compare value to 1Hz at 1MHz AVR clock, with a prescaler of 64
-	TCCR1B |= ((1 << CS10) | (1 << CS11)); // Start timer at Fcpu/64
 
 	lcd_init(LCD_DISP_ON);
 
@@ -135,20 +159,17 @@ int main(void)
 	lcd_puts("connect\n cables!");
 	waitForOk();
 	lcd_clrscr();
-	lcd_puts("set Mash\ntime:");
-	_delay_ms(200);
-	setMashTimeLoop();
+
+	MashProfile profile;
+	setupMash(&profile);
+
 //
 	lcd_clrscr();
-	lcd_puts("Mash tmp:");
-	_delay_ms(200);
-	setMashTempLoop();
-
 
 	//switch on ssr for mash tun
 	//ad start mash timer
 	lcd_clrscr();
-	lcd_puts("Mash!");
+	lcd_puts("Starting mash");
 	state = STATE_MASH;
 
 //	turn_on_mash_heater();

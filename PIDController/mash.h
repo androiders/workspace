@@ -13,7 +13,7 @@
 enum
 {
 	LinearTemp,
-	SingleInfusione,
+	SingleInfusion,
 	MultiStepInfusion
 } MashType;
 
@@ -24,24 +24,39 @@ typedef struct _mashProfile
 	uint8_t breakTimes[MAX_NR_OF_BREAKS];
 	uint8_t breakTemps[MAX_NR_OF_BREAKS];
 	uint8_t totalMashTime;
+	uint8_t linearStartTemp;
+	uint8_t linearStopTemp;
+	BOOL useMashOut;
 } MashProfile;
 
 
-
+BOOL setupMash(MashProfile * profile);
 
 //private functions
 
 uint8_t setNumberOfMashBreaks(MashProfile * profile);
 
+void setMashType(MashProfile * profile);
+
 void setMashTimesLoop(MashProfile * profile);
 
 void setMashTempsLoop(MashProfile * profile);
 
-//TODO: implement
-void setMashType(MashProfile * profile);
+void setMashLinearStartTemp(MashProfile * profile);
 
-uint8_t setMashTimeLoop();
+void setMashLinearStopTemp(MashProfile * profile);
 
-uint8_t setMashTempLoop();
+void setMashTimeLoop(MashProfile * profile, uint8_t index);
+
+void setMashTempLoop(MashProfile * profile, uint8_t index);
+
+uint8_t setUseMashOut(MashProfile * profile);
+
+//print lcd functions
+void printMashType(uint8_t x, uint8_t y, MashType type);
+
+void printUseMashOut(uint8_t yesorno);
+
+
 
 #endif /* MASH_H_ */
