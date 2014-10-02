@@ -21,7 +21,7 @@ uint8_t getUserValueWithString(const char * str, uint8_t max, uint8_t min, uint8
  * returns 0 if OK_BTN is pressed, 1 if BTN_UP is presseed and -1 if BTN_DOWN is pressed
  * a value of -99 is returned if no button was pressed
  */
-uint8_t getValueFromInput();
+int8_t getValueFromInput();
 
 void printStringAndNum(const char * string, uint8_t tmp);
 

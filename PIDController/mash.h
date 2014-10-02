@@ -10,7 +10,7 @@
 
 #define MAX_NR_OF_BREAKS 10
 
-enum
+typedef enum
 {
 	LinearTemp,
 	SingleInfusion,
@@ -34,7 +34,7 @@ BOOL setupMash(MashProfile * profile);
 
 //private functions
 
-uint8_t setNumberOfMashBreaks(MashProfile * profile);
+void setNumberOfMashBreaks(MashProfile * profile);
 
 void setMashType(MashProfile * profile);
 
@@ -50,7 +50,7 @@ void setMashTimeLoop(MashProfile * profile, uint8_t index);
 
 void setMashTempLoop(MashProfile * profile, uint8_t index);
 
-uint8_t setUseMashOut(MashProfile * profile);
+void setUseMashOut(MashProfile * profile);
 
 //print lcd functions
 void printMashType(uint8_t x, uint8_t y, MashType type);

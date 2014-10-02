@@ -6,6 +6,7 @@
  */
 
 #include "buttons.h"
+#include "lcd.h"
 
 uint8_t getUserValueWithString(const char * str, uint8_t max, uint8_t min, uint8_t delta)
 {
@@ -14,7 +15,7 @@ uint8_t getUserValueWithString(const char * str, uint8_t max, uint8_t min, uint8
 	while( !done )
 	{
 		uint8_t btn = readButtons();
-		printStringAndNum(str,val)
+		printStringAndNum(str,val);
 		switch( btn )
 		{
 		case BTN_UP:

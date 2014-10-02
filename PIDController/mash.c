@@ -6,6 +6,7 @@
  */
 #include "buttons.h"
 #include "mash.h"
+#include "lcd.h"
 
 BOOL setupMash(MashProfile * profile)
 {
@@ -18,7 +19,7 @@ BOOL setupMash(MashProfile * profile)
 		profile->nrOfBreaks = 1;
 		setMashLinearStartTemp(profile);
 		setMashLinearStopTemp(profile);
-		setMashTimessLoop(profile);
+		setMashTimesLoop(profile);
 	}
 	else if(profile->type == SingleInfusion)
 	{
@@ -146,7 +147,7 @@ void setMashTimeLoop(MashProfile * profile, uint8_t index)
 
 	while( !done )
 	{
-		printStringAndNum("Break Time", mashTime)
+		printStringAndNum("Break Time", mashTime);
 		int8_t val = getValueFromInput();
 
 		mashTime += val * 5;
@@ -169,7 +170,7 @@ void setMashTempLoop(MashProfile * profile, uint8_t index)
 
 	while( !done )
 	{
-		printStringAndNum("Break Time", mashTmp)
+		printStringAndNum("Break Time", mashTmp);
 		int8_t val = getValueFromInput();
 
 		mashTmp += val * 2;
