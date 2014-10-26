@@ -1,10 +1,14 @@
-pidcontroller.d: ../pidcontroller.c ../lcd.h ../ds12887.h ../onewire.h \
- ../ds18x20.h
+pidcontroller.d: ../pidcontroller.c ../lcd.h ../onewire.h ../ds18x20.h \
+ ../buttons.h ../utils.h ../mash.h
 
 ../lcd.h:
-
-../ds12887.h:
 
 ../onewire.h:
 
 ../ds18x20.h:
+
+../buttons.h:
+
+../utils.h:
+
+../mash.h:

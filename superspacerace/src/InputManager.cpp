@@ -24,18 +24,7 @@ InputManager::InputManager( GameManager * gmangr )
    pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
    mInputManager = OIS::InputManager::createInputSystem(pl);
    mJoystick = 0;
-   try
-      {
-         mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject(OIS::OISKeyboard, false));
-         //mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, false));
-         //mJoystick = static_cast<OIS::JoyStick*>(mInputManager->createInputObject(OIS::OISJoyStick, false));
-      }
-      catch (const OIS::Exception &e)
-      {
-         throw Ogre::Exception(42, e.eText, "Application::setupInputSystem");
-      }
-
-   //mKeyboard->setEventCallback(this);
+   mKeyboard = 0;
    mContinue = true;
 }
 
@@ -57,6 +46,41 @@ InputManager::~InputManager( )
   std::cout << "destroyed input manager " << std::endl;
 #endif
 }
+
+bool InputManager::initJoystick()
+{
+    bool retVal = true;
+    try
+    {
+        mJoystick = static_cast<OIS::JoyStick*>(mInputManager->createInputObject(OIS::OISJoyStick, false));
+    }
+    catch (const OIS::Exception &e)
+    {
+        retVal = false;
+    #ifdef DEBUG
+        std::cout << e.eText() << std::endl;
+    #endif
+    }
+    return retVal;
+}
+
+bool InputManager::initKeyboard()
+{
+    bool retVal = true;
+    try
+    {
+        mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject(OIS::OISKeyboard, false));
+    }
+    catch (const OIS::Exception &e)
+    {
+        retVal = false;
+        #ifdef DEBUG
+            std::cout << e.eText() << std::endl;
+        #endif
+    }
+    return retVal;
+}
+
 
 void InputManager::setJoystickHandler(  JoystickHandler * pHandler  )
 {

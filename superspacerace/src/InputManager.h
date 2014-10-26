@@ -25,6 +25,11 @@ class InputManager : /*public refptr::Referenced,*/ public Ogre::FrameListener//
 
         InputManager( GameManager * gmangr );
 
+        bool initJoystick();
+
+        //needed?
+        bool initKeyboard();
+
       /**
        * OGRE frame listener
        */
