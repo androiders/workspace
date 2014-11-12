@@ -1,1 +1,9 @@
 .metadata
+*.mk
+*.o
+*.d
+*.dex
+*.eep
+*.lss
+*.map
+
