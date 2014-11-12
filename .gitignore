@@ -1,4 +1,5 @@
-.metadata
+.metadata/
+.metadata/.plugins/
 *.mk
 *.o
 *.d
