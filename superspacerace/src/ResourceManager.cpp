@@ -1,5 +1,7 @@
 #include "ResourceManager.h"
 //#include <Ogre/Ogre.h>
+#include <Overlay/OgreOverlay.h>
+#include <Overlay/OgreOverlayManager.h>
 
 ResourceManager * ResourceManager::theInstance = 0;
 
@@ -23,6 +25,8 @@ ResourceManager::~ResourceManager( )
 
 void ResourceManager::initialize( GraphicsManager * pGmngr )
 {
+
+
    mGraphicsManager = pGmngr;
 
    Ogre::ConfigFile cf;
@@ -46,6 +50,14 @@ void ResourceManager::initialize( GraphicsManager * pGmngr )
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+
+
+
+    Ogre::OverlayManager & om = Ogre::OverlayManager::getSingleton();
+    Ogre::Overlay* thisOverlay = om.getByName("nojoystick");
+    thisOverlay->show();
+
+//    = static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingletonPtr()->getByName("NoJoystick"));
 
     mNextNodeId = -1;
    mInitialized = true;

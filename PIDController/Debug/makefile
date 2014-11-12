@@ -43,7 +43,7 @@ all: PIDController.elf secondary-outputs
 PIDController.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: AVR C Linker'
-	avr-gcc -Wl,-Map,PIDController.map -mmcu=atmega8515 -o "PIDController.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	avr-gcc -Wl,-Map,PIDController.map -mmcu=atmega32 -o "PIDController.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 	$(MAKE) --no-print-directory post-build
@@ -56,7 +56,7 @@ PIDController.lss: PIDController.elf
 
 sizedummy: PIDController.elf
 	@echo 'Invoking: Print Size'
-	-avr-size --format=avr --mcu=atmega8515 PIDController.elf
+	-avr-size --format=avr --mcu=atmega32 PIDController.elf
 	@echo 'Finished building: $@'
 	@echo ' '
 

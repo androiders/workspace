@@ -42,6 +42,10 @@ void GameManager::initializeGame( )
     graphicsManager->getRoot( )->addFrameListener( inputManager );
     graphicsManager->getRoot( )->addFrameListener( new UpdateFrameListener( this ) );
 
+    //check return values and show dialog
+    inputManager->initJoystick();
+    inputManager->initKeyboard();
+
 }
 
 void GameManager::runGame( )

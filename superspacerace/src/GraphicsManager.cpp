@@ -1,5 +1,6 @@
 #include "GraphicsManager.h"
 #include <iostream>
+#include <Overlay/OgreOverlaySystem.h>
 
 GraphicsManager::GraphicsManager( int resx, int resy, int bpp )
 {
@@ -54,6 +55,8 @@ void GraphicsManager::setupVideo( int xres, int yres, int bpp )
       Ogre::SceneNode * sn = mSceneManager->getRootSceneNode()->createChildSceneNode("light1");
       sn->attachObject(l1);
 
+      Ogre::OverlaySystem* m_pOverlaySystem = new Ogre::OverlaySystem();
+      mSceneManager->addRenderQueueListener(m_pOverlaySystem);
 
 }
 
