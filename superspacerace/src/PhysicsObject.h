@@ -1,6 +1,6 @@
 #ifndef PHYSICSOBJECT_H_INCLUDED
 #define PHYSICSOBJECT_H_INCLUDED
-#include <btBulletDynamicsCommon.h>
+#include <bullet/btBulletDynamicsCommon.h>
 //#include <refptr/Referenced.h>
 #include <OGRE/Ogre.h>
 

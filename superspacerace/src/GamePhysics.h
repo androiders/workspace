@@ -1,7 +1,7 @@
 #ifndef GAMEPHYSICS_H_INCLUDED
 #define GAMEPHYSICS_H_INCLUDED
 
-#include <btBulletDynamicsCommon.h>
+#include <bullet/btBulletDynamicsCommon.h>
 //#include <refptr/Referenced.h>
 
 class GamePhysics //: public refptr::Referenced

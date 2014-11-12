@@ -1,6 +1,6 @@
 #include "GraphicsManager.h"
 #include <iostream>
-#include <Overlay/OgreOverlaySystem.h>
+#include <OGRE/Overlay/OgreOverlaySystem.h>
 
 GraphicsManager::GraphicsManager( int resx, int resy, int bpp )
 {
