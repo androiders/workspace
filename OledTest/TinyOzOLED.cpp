@@ -220,6 +220,7 @@ void TinyOzOLED::sendCommand(byte command){
 	TinyWireM.send(TinyOzOLED_COMMAND_MODE);//data mode
 	TinyWireM.send(command);
 	TinyWireM.endTransmission();    // stop transmitting
+	delay(10);
 }
 
 void TinyOzOLED::sendCommands(byte * commands, byte nrOfCommands)
@@ -231,7 +232,7 @@ void TinyOzOLED::sendCommands(byte * commands, byte nrOfCommands)
 		TinyWireM.send(commands[c]);
 
 	TinyWireM.endTransmission();    // stop transmitting
-
+	delay(10);
 }
 
 
@@ -241,7 +242,7 @@ void TinyOzOLED::sendData(byte data){
 	TinyWireM.send(TinyOzOLED_DATA_MODE);//data mode
 	TinyWireM.send(data);
 	TinyWireM.endTransmission();    // stop transmitting
-
+	delay(10);
 }
 
 void TinyOzOLED::printChar(char C, byte X, byte Y){
@@ -466,8 +467,18 @@ void TinyOzOLED::init(){
 */	
     setPowerOff(); 	//display off
     delay(10);
-    setPowerOn();	//display on
-    delay(10); 
+    sendCommand(TinyOzOLED_CMD_CHARGE_PUMP_ON);	
+//setInverseDisplay();	
+   
+    byte cmds[2];
+	cmds[0] = TinyOzOLED_CMD_PRE_CHARGE;
+	cmds[1] = 0xFF;
+	sendCommands(cmds,2);
+
+	
+
+
+     //delay(10);
     //setNormalDisplay();  //default Set Normal Display
     //setInverseDisplay();
 	setPageAddressingMode();	// default addressing mode
@@ -475,7 +486,31 @@ void TinyOzOLED::init(){
 	//clearDisplay();
 	setCursorXY(0,0);
 	//setPowerOn();
+ setPowerOn();	//display on
+}
 
+void TinyOzOLED::setPreCharge(byte val)
+{
+	byte cmds[2];
+	cmds[0] = 0xD9;
+	cmds[1] = val;
+	sendCommands(cmds,2);
+}
+
+void TinyOzOLED::setOsc(byte val)
+{
+	byte cmds[2];
+	cmds[0] = 0xD5;
+	cmds[1] = val;
+	sendCommands(cmds,2);
+}
+
+void TinyOzOLED::setVCom(byte val)
+{
+	byte cmds[2];
+	cmds[0] = 0xDB;
+	cmds[1] = val;
+	sendCommands(cmds,2);
 }
 
 void TinyOzOLED::setAllOn(byte onOff)
@@ -625,7 +660,7 @@ void TinyOzOLED::setAddressingMode(byte mode)
 	byte cmds[2];
 	cmds[0] = MEMORY_ADDRESS_CMD;
 	cmds[1] = mode;
-	sendCommands(cmds,2); 	//set page addressing mode
+	sendCommands(cmds,2);
 
 }
 

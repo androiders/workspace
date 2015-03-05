@@ -35,6 +35,10 @@
 #define TinyOzOLED_CMD_DISPLAY_OFF			0xAE
 #define TinyOzOLED_CMD_DISPLAY_ON			0xAF
 
+#define TinyOzOLED_CMD_CHARGE_PUMP_ON		0x14
+#define TinyOzOLED_CMD_CHARGE_PUMP_OFF		0x10
+#define TinyOzOLED_CMD_PRE_CHARGE		0xD9
+
 #define TinyOzOLED_CMD_NORMAL_DISPLAY		0xA6
 #define TinyOzOLED_CMD_INVERSE_DISPLAY		0xA7
 
@@ -118,6 +122,9 @@ public:
 	void setActivateScroll(byte direction, byte startPage, byte endPage, byte scrollSpeed);
 	void setDeactivateScroll();
 
+	void setOsc(byte val);
+	void setPreCharge(byte val);
+	void setVCom(byte val);
 private:
 
 	void setAddressingMode(byte mode);
