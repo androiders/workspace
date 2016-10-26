@@ -19,6 +19,8 @@
 #ifndef TinyOzOLED_data_H
 #define TinyOzOLED_data_H
 
+//#define USE_TINY 1
+
 #include <Arduino.h>
 
 #define TinyOzOLED_Max_X					128	//128 Pixels
@@ -37,7 +39,7 @@
 
 #define TinyOzOLED_CMD_CHARGE_PUMP_ON		0x14
 #define TinyOzOLED_CMD_CHARGE_PUMP_OFF		0x10
-#define TinyOzOLED_CMD_PRE_CHARGE		0xD9
+#define TinyOzOLED_CMD_PRE_CHARGE		   0xD9
 
 #define TinyOzOLED_CMD_NORMAL_DISPLAY		0xA6
 #define TinyOzOLED_CMD_INVERSE_DISPLAY		0xA7
@@ -52,6 +54,8 @@
 #define TinyOzOLED_CMD_ACTIVATE_SCROLL		0x2F
 #define TinyOzOLED_CMD_DEACTIVATE_SCROLL	0x2E
 
+#define DISPLAY_OFFSET_CMD	0xD3
+
 //#define HORIZONTAL_ADDRESSING	0x20
 //#define PAGE_ADDRESSING			0x22
 
@@ -62,6 +66,8 @@
 
 #define SET_COLUMN_ADDRESS_CMD		0x21
 #define SET_PAGE_ADDRESS_CMD		0x22
+
+#define SET_MULTIPLEX_RATIO_CMD	0xA8
 
 #define Scroll_Left				0x00
 #define Scroll_Right			0x01
@@ -87,6 +93,8 @@ public:
 	void sendCommand(byte command);
 	void sendCommands(byte * commands, byte nrOfCommands);
 	void sendData(byte Data);
+	void sendData(byte * data, byte size);
+	void sendDataMulti(byte data, byte times);
 
 	void printChar(char c, byte X=255, byte Y=255);
 	void printString(const char *String, byte X=255, byte Y=255, byte numChar=255);
@@ -98,7 +106,8 @@ public:
 	void init();
 	
 	void setCursorXY(byte Column, byte Row);
-	void clearDisplay();
+	void clearDisplay(byte data = 0x00);
+	void clearLine(byte line, byte data=0x00);
 	//void clearPage(byte page);
 	
 	void setNormalDisplay();
@@ -115,6 +124,8 @@ public:
 
 	void setBrightness(byte Brightness);
 	
+	void setMultiplexRatio(byte ratio);
+
 	void scrollRight(byte start, byte end, byte speed);
 	void scrollLeft(byte start, byte end, byte speed);
 	void scrollDiagRight();

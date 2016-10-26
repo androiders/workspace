@@ -20,9 +20,28 @@
 
 
 #include "TinyOzOLED.h"
+#ifdef USE_TINY
 #include <TinyWireM.h>
+#else
+#include <Wire.h>
+#endif
 #include <avr/pgmspace.h>
 
+#ifdef USE_TINY
+
+#define begin()	TinyWireM.Begin()
+#define send(x) TinyWireM.send(x)
+#define beginTransmission(x) TinyWireM.beginTransmission(x)
+#define endTransmission(x) TinyWireM.endTransmission(x)
+
+#else
+
+#define begin() Wire.begin()
+#define send(x) Wire.write(x)
+#define beginTransmission(x) Wire.beginTransmission(x)
+#define endTransmission(x) Wire.endTransmission(x)
+
+#endif
 
 // 8x8 Font ASCII 32 - 127 Implemented
 // Users can modify this to support more characters(glyphs)
@@ -216,33 +235,52 @@ const byte bigNumbers [][96] PROGMEM = {
 // ====================== LOW LEVEL =========================
 
 void TinyOzOLED::sendCommand(byte command){
-	TinyWireM.beginTransmission(OLED_ADDRESS); // begin transmitting
-	TinyWireM.send(TinyOzOLED_COMMAND_MODE);//data mode
-	TinyWireM.send(command);
-	TinyWireM.endTransmission();    // stop transmitting
-	delay(10);
+	beginTransmission(OLED_ADDRESS); // begin transmitting
+	send(TinyOzOLED_COMMAND_MODE);//data mode
+	send(command);
+	endTransmission();    // stop transmitting
+	delay(5);
 }
 
 void TinyOzOLED::sendCommands(byte * commands, byte nrOfCommands)
 {
-	TinyWireM.beginTransmission(OLED_ADDRESS); // begin transmitting
-	TinyWireM.send(TinyOzOLED_COMMAND_MODE);//data mode
+	beginTransmission(OLED_ADDRESS); // begin transmitting
+	send(TinyOzOLED_COMMAND_MODE);//data mode
 
 	for(byte c = 0; c < nrOfCommands; ++c)
-		TinyWireM.send(commands[c]);
+		send(commands[c]);
 
-	TinyWireM.endTransmission();    // stop transmitting
-	delay(10);
+	endTransmission();    // stop transmitting
+	delay(5);
 }
 
 
 void TinyOzOLED::sendData(byte data){
 	
-	TinyWireM.beginTransmission(OLED_ADDRESS); // begin transmitting
-	TinyWireM.send(TinyOzOLED_DATA_MODE);//data mode
-	TinyWireM.send(data);
-	TinyWireM.endTransmission();    // stop transmitting
-	delay(10);
+	beginTransmission(OLED_ADDRESS); // begin transmitting
+	send(TinyOzOLED_DATA_MODE);//data mode
+	send(data);
+	endTransmission();    // stop transmitting
+	//delay(1);
+}
+
+void TinyOzOLED::sendData(byte * data, byte size){
+	
+	beginTransmission(OLED_ADDRESS); // begin transmitting
+	send(TinyOzOLED_DATA_MODE);//data mode
+	for(byte i = 0; i < size; ++i)
+		send(data[i]);
+	endTransmission();    // stop transmitting
+	//delay(1);
+}
+
+void TinyOzOLED::sendDataMulti(byte data, byte times)
+{
+beginTransmission(OLED_ADDRESS); // begin transmitting
+	send(TinyOzOLED_DATA_MODE);//data mode
+	for(byte i = 0; i < times; ++i)
+		send(data);
+	endTransmission();    // stop transmitting
 }
 
 void TinyOzOLED::printChar(char C, byte X, byte Y){
@@ -453,40 +491,65 @@ void TinyOzOLED::drawBitmap(const byte *bitmaparray, byte X, byte Y, byte width,
 
 
 void TinyOzOLED::init(){
-	TinyWireM.begin();
-	
-	// upgrade to 400KHz! (only use when your other i2c device support this speed)
-/*	if (I2C_400KHZ){
-		// save I2C bitrate (default 100Khz)
-		byte twbrbackup = TWBR;
-		TWBR = 12; 
-		//TWBR = twbrbackup;
-		//Serial.println(TWBR, DEC);
-		//Serial.println(TWSR & 0x3, DEC);
-	}
-*/	
+	begin();
+
     setPowerOff(); 	//display off
-    delay(10);
-    sendCommand(TinyOzOLED_CMD_CHARGE_PUMP_ON);	
-//setInverseDisplay();	
+    delay(5);
+
+    setOsc(0x80);
+
+  byte cmds[2];
+  //charge pump on (internal)
+  cmds[0] = 0x8D;
+  cmds[1] = 0x14;
+ sendCommands(cmds,2);   
    
-    byte cmds[2];
-	cmds[0] = TinyOzOLED_CMD_PRE_CHARGE;
-	cmds[1] = 0xFF;
-	sendCommands(cmds,2);
+   cmds[0] = SET_MULTIPLEX_RATIO_CMD;   
+	cmds[1] = 0x3F;
+   sendCommands(cmds,2);
+   
+   cmds[0] = DISPLAY_OFFSET_CMD;
+	cmds[1] = 0x00;
+   sendCommands(cmds,2);
 
+	//display start line
+	sendCommand(0x40);
+
+	//sgment re-map
+	sendCommand(0xA0);
+	  
+  //scan direction
+  sendCommand(0xC0);
+
+	//com pin hw conf  
+   cmds[0] = 0xDA;
+	cmds[1] = 0x12;
+   sendCommands(cmds,2);
+
+	setPreCharge(0xF4);
 	
+	setVCom(0x30);
+
+	setBrightness(0xF3);
+
+	sendCommand(0xA4);
+
+	sendCommand(0xA6);
 
 
-     //delay(10);
+	//setPageAddressingMode();	// default addressing mode
+	
+   delay(10);
+	
+	setPowerOn();
+
     //setNormalDisplay();  //default Set Normal Display
     //setInverseDisplay();
-	setPageAddressingMode();	// default addressing mode
 	//setHorizontalAddressingMode();
 	//clearDisplay();
-	setCursorXY(0,0);
-	//setPowerOn();
- setPowerOn();	//display on
+	//setCursorXY(0,0);
+	
+// setPowerOn();	//display on
 }
 
 void TinyOzOLED::setPreCharge(byte val)
@@ -555,20 +618,47 @@ void TinyOzOLED::setCursorXY(byte X, byte Y){
 }
 
 
-void TinyOzOLED::clearDisplay()	{
+void TinyOzOLED::clearDisplay(byte data = 0x00)	{
 
+	byte aMode = addressingMode;
+	setHorizontalAddressingMode();	
+	
+	setCursorXY(0, 0);     
 
 	for(byte page=0; page<8; page++) {	
-	
-		setCursorXY(0, page);     
-		for(byte column=0; column<128; column++){  //clear all columns
-			sendData(0);    
-		}
-
+		sendDataMulti(data,16);
+		sendDataMulti(data,16);
+		sendDataMulti(data,16);
+		sendDataMulti(data,16);
+		sendDataMulti(data,16);
+		sendDataMulti(data,16);
+		sendDataMulti(data,16);
+		sendDataMulti(data,16);
 	}
 	
-	//setCursorXY(0,0);
+	setAddressingMode(aMode);
+}
+
+void TinyOzOLED::clearLine(byte line,byte data = 0x00)
+{
+	if(line > 8)
+		return;
+
+	byte aMode = addressingMode;
+	setHorizontalAddressingMode();	
 	
+	setCursorXY(0, line);     
+
+	sendDataMulti(data,16);
+	sendDataMulti(data,16);
+	sendDataMulti(data,16);
+	sendDataMulti(data,16);
+	sendDataMulti(data,16);
+	sendDataMulti(data,16);
+	sendDataMulti(data,16);
+	sendDataMulti(data,16);
+	
+	setAddressingMode(aMode);
 }
 
 /*
@@ -616,6 +706,14 @@ void TinyOzOLED::setBrightness(byte Brightness)
 
 	sendCommands(cmds,2);
    
+}
+
+void TinyOzOLED::setMultiplexRatio(byte ratio)
+{
+	byte cmds[2];
+	cmds[0] = SET_MULTIPLEX_RATIO_CMD;
+	cmds[1] = ratio;
+	sendCommands(cmds,2);
 }
 
 void TinyOzOLED::setPageAddressingMode(){
@@ -666,7 +764,7 @@ void TinyOzOLED::setAddressingMode(byte mode)
 
 // startscrollright
 // Activate a right handed scroll for rows start through stop
-// Hint, the display is 16 rows tall. To scroll the whole display, run:
+// Hint, the display is 8 rows tall. To scroll the whole display, run:
 // scrollRight(0x00, 0x0F)  - start - stop
 void TinyOzOLED::scrollRight(byte start, byte end, byte speed){
 
