@@ -5,6 +5,7 @@
 #include "restclient.h"
 #include <QJsonArray>
 #include <QDate>
+#include <QMap>
 
 class YahooInterface : public QObject
 {
@@ -33,6 +34,10 @@ signals:
 
     void stockSearchReady(const QVariantList & searchResults);
 
+    void stockSearchReady(const QStringList & symbols);
+
+    void stockSearchFailed(const QString & errStr);
+
     void stockHistoricalDataReady(const QString & symbol, const QJsonArray & stockData);
 
 
@@ -49,6 +54,8 @@ private:
      void parseHistoricalStockData(const QString & data);
      //DataPair getSymbolQueryPair(const QStringList & symbols) const;
 
+     void searchFailed();
+
      DataPair getJsonFormatPair() const;
      DataPair getDiagnosticsPair() const;
      DataPair getEnvPair() const;
@@ -64,7 +71,7 @@ private:
 
      unsigned int mStockReadyReqId;
 
-     unsigned int mHistoricalDataReqId;
+     QMap<unsigned int,bool> mHistoricalDataReqIds;
 };
 
 #endif // YAHOOINTERFACE_H

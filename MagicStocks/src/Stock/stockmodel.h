@@ -34,11 +34,13 @@ public slots:
 
     StockData * getStockData(const QString & symbol);
 
+    const StockData & getStockDataRef(int i) const;
+
 //    QHash<int, QByteArray> roleNames() const;
 
     void addData(StockData * data);
 
-    void setHistoricalData(const QString & symbol, const QJsonArray & data);
+//    void setHistoricalData(const QString & symbol, const QJsonArray & data);
 
 signals:
 

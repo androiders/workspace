@@ -1,35 +1,41 @@
 #include "stockdata.h"
 
 
-StockData::StockData(QObject *parent) : QObject(parent)
+StockData::StockData(const QString & name, const QString & symbol, QObject *parent)
+    : QObject(parent)
+    ,mName(name)
+    ,mSymbol(symbol)
 {
-    dayLow = 0.0f;
-    dayHigh = 500.0f;
-    change = 0.f;
-}
-
-StockData::StockData(const QJsonObject &jsonData)
-{
-    mName = jsonData["Name"].toString();
-    mSymbol = jsonData["Symbol"].toString();
-    currentPrice = (jsonData["Bid"].toString()).toFloat();
-    dayLow = (jsonData["DaysLow"].toString()).toFloat();
-    dayHigh = (jsonData["DaysHigh"].toString()).toFloat();
-    change = (jsonData["Change"].toString()).toFloat();
-
-    twoHundredDayAverage = (jsonData["TwoHundreddayMovingAverage"].toString()).toFloat();
-    fiftyDayAverage = (jsonData["FiftydayMovingAverage"].toString()).toFloat();
 
 }
 
-StockData::StockData(const StockData &other)
-    :QObject(0)
+int StockData::columntCount() const
 {
-    mName = other.mName;
-    currentPrice = other.currentPrice;
-//    lowest = 0.0f;
-//    highest = 500.0f;
+    return mHistoricalData.columnCount();
 }
+
+//StockData::StockData(const QJsonObject &jsonData)
+//{
+//    mName = jsonData["Name"].toString();
+//    mSymbol = jsonData["Symbol"].toString();
+//    currentPrice = (jsonData["Bid"].toString()).toFloat();
+//    dayLow = (jsonData["DaysLow"].toString()).toFloat();
+//    dayHigh = (jsonData["DaysHigh"].toString()).toFloat();
+//    change = (jsonData["Change"].toString()).toFloat();
+
+//    twoHundredDayAverage = (jsonData["TwoHundreddayMovingAverage"].toString()).toFloat();
+//    fiftyDayAverage = (jsonData["FiftydayMovingAverage"].toString()).toFloat();
+
+//}
+
+//StockData::StockData(const StockData &other)
+//    :QObject(0)
+//{
+//    mName = other.mName;
+//    currentPrice = other.currentPrice;
+////    lowest = 0.0f;
+////    highest = 500.0f;
+//}
 
 QString StockData::name() const
 {
@@ -41,54 +47,114 @@ void StockData::setName(const QString &value)
     mName = value;
 }
 
-float StockData::getCurrentPrice() const
+void StockData::setSymbol(const QString &symbol)
 {
-    return currentPrice;
+    mSymbol = symbol;
 }
 
-void StockData::setCurrentPrice(float value)
+double StockData::getLatestClosingPrice() const
 {
-    currentPrice = value;
+    if(mHistoricalData.size() == 0)
+        return 0;
+
+    return mHistoricalData[0].closePrice();
 }
 
-float StockData::getHighest() const
+double StockData::getLatestHighestPrice() const
 {
-    return dayHigh;
+    if(mHistoricalData.size() == 0)
+        return 0;
+
+    return mHistoricalData[0].dayHigh();
 }
 
-void StockData::setHighest(float value)
+double StockData::getLatestLowestPrice() const
 {
-    dayHigh = value;
+    if(mHistoricalData.size() == 0)
+        return 0;
+
+    return mHistoricalData[0].dayLow();
 }
 
-float StockData::getLowest() const
+double StockData::getLatestOpeningPrice() const
 {
-    return dayLow;
+    if(mHistoricalData.size() == 0)
+        return 0;
+
+    return mHistoricalData[0].openPrice();
 }
 
-float  StockData::getPriceChange() const
+double StockData::getLatestSMA200() const
 {
-    return change;
+    if(mHistoricalData.size() == 0)
+        return 0;
+
+    return mHistoricalData[0].getSma200();
 }
 
-QString StockData::currency() const
+QString StockData::symbol() const
 {
-    return mCurrency;
+    return mSymbol;
 }
 
-float StockData::getTwoHundredDayAverage() const
+//float StockData::getCurrentPrice() const
+//{
+//    return currentPrice;
+//}
+
+//void StockData::setCurrentPrice(float value)
+//{
+//    currentPrice = value;
+//}
+
+//float StockData::getHighest() const
+//{
+//    return dayHigh;
+//}
+
+//void StockData::setHighest(float value)
+//{
+//    dayHigh = value;
+//}
+
+//float StockData::getLowest() const
+//{
+//    return dayLow;
+//}
+
+//float  StockData::getPriceChange() const
+//{
+//    return change;
+//}
+
+//QString StockData::currency() const
+//{
+//    return mCurrency;
+//}
+
+//float StockData::getTwoHundredDayAverage() const
+//{
+//    return twoHundredDayAverage;
+//}
+
+//float StockData::getFiftyDayAverage() const
+//{
+//    return fiftyDayAverage;
+//}
+
+void StockData::setHistoricalData(const StockHistoricalData &data)
 {
-    return twoHundredDayAverage;
+    mHistoricalData = data;
 }
 
-float StockData::getFiftyDayAverage() const
+int StockData::getHistoricalSize() const
 {
-    return fiftyDayAverage;
+    return mHistoricalData.size();
 }
 
-void StockData::setHistoricalData(const QJsonArray &data)
+const StockHistoricalDataPoint &StockData::getHistoricalData(int index) const
 {
-    mHistoricalData.setData(data);
+    return mHistoricalData[index];
 }
 
 //const QVariant &StockData::operator[](std::size_t idx) const
@@ -112,55 +178,55 @@ const QVariant StockData::getValueByIndex(std::size_t idx) const
         return QVariant::fromValue(mSymbol);
         break;
     case 2:
-        return QVariant::fromValue(currentPrice);
+        return QVariant::fromValue(getLatestOpeningPrice());
         break;
     case 3:
-        return QVariant::fromValue(dayHigh);
+        return QVariant::fromValue(getLatestHighestPrice());
         break;
     case 4:
-        return QVariant::fromValue(dayLow);
+        return QVariant::fromValue(getLatestLowestPrice());
         break;
     case 5:
-        return QVariant::fromValue(change);
+        return QVariant::fromValue(getLatestClosingPrice());
         break;
     case 6:
-        return QVariant::fromValue(twoHundredDayAverage);
+        return QVariant::fromValue(getLatestSMA200());
         break;
-    case 7:
-        return QVariant::fromValue(fiftyDayAverage);
-        break;
-    case 8:
-        return QVariant::fromValue(mCurrency);
-        break;
+//    case 7:
+//        return QVariant::fromValue(fiftyDayAverage);
+//        break;
+//    case 8:
+//        return QVariant::fromValue(mCurrency);
+//        break;
     default:
         return QVariant();
     }
 }
 
-QJsonArray StockData::getLabels(int size) const
-{
-    return mHistoricalData.getLabels(size);
-}
+//QJsonArray StockData::getLabels(int size) const
+//{
+//    return mHistoricalData.getLabels(size);
+//}
 
 
-QJsonArray StockData::getValues(int size) const
-{
-    return mHistoricalData.getValues(size);
+//QJsonArray StockData::getValues(int size) const
+//{
+//    return mHistoricalData.getValues(size);
 
-}
+//}
 
-void StockData::setLowest(float value)
-{
-    dayLow = value;
-}
+//void StockData::setLowest(float value)
+//{
+//    dayLow = value;
+//}
 
-void StockData::setChange(float pChange)
-{
-    change = pChange;
-}
+//void StockData::setChange(float pChange)
+//{
+//    change = pChange;
+//}
 
-QString StockData::symbol() const
-{
-    return mSymbol;
-}
+//QString StockData::symbol() const
+//{
+//    return mSymbol;
+//}
 

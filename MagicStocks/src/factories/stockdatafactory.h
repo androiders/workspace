@@ -2,8 +2,9 @@
 #define STOCKDATAFACTORY_H
 
 #include <QObject>
-#include "stockdata.h"
-#include "stockmodel.h"
+#include "src/Stock/stockdata.h"
+#include "src/Stock/stockmodel.h"
+#include <QJsonArray>
 
 class StockDataFactory : public QObject
 {
@@ -13,13 +14,23 @@ public:
 
     void setModel(StockModel * model);
 
+    static const QJsonArray buildJsonFromStockData(const StockData * sd);
+
 signals:
 
 public slots:
 
     void buildFromJsonArray(const QJsonArray & array);
 
+    void buildHistoryFromJsonArray(const QString & symbol, const QJsonArray & array);
+
 private:
+
+    StockHistoricalDataPoint createDataPoint(QString symbol,
+                                             float closePrice,
+                                             float open,
+                                             float dayLow,
+                                             float dayHigh, QDate &date);
 
     StockModel * mModel;
 };

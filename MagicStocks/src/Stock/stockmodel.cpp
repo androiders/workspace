@@ -1,15 +1,13 @@
 #include "stockmodel.h"
-#include <stockdata.h>
+#include "stockdata.h"
 
 QHash<int,QByteArray> StockModel::sHeaderRoleNames({std::pair<int,QByteArray>(0,"Name"),
                                                     std::pair<int,QByteArray>(1,"Symbol"),
-                                                    std::pair<int,QByteArray>(2,"Price"),
+                                                    std::pair<int,QByteArray>(2,"Open"),
                                                     std::pair<int,QByteArray>(3,"High"),
                                                     std::pair<int,QByteArray>(4,"Low"),
-                                                    std::pair<int,QByteArray>(5,"Change"),
-                                                    std::pair<int,QByteArray>(6,"200 MA"),
-                                                    std::pair<int,QByteArray>(7,"50 MA"),
-                                                    std::pair<int,QByteArray>(8,"Currency")});
+                                                    std::pair<int,QByteArray>(5,"Close"),
+                                                    std::pair<int,QByteArray>(6,"200 MA")});
 
 StockModel::StockModel(QObject * parent)
     :QAbstractTableModel(parent)
@@ -46,7 +44,7 @@ QVariant StockModel::data(const QModelIndex &index, int role) const
 
     StockData * tmp = mStockList.at(index.row());
     QVariant qv;
-    qv = tmp->getValueByIndex(role);
+    qv = tmp->getValueByIndex(index.column());
     return qv;//QVariant::fromValue((*tmp)[index.column()]);
 }
 
@@ -64,6 +62,9 @@ int StockModel::rowCount(const QModelIndex &parent) const
 
 QVariant StockModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
+    if (role != Qt::DisplayRole)
+            return QVariant();
+
     Q_UNUSED(orientation);
     Q_UNUSED(role);
     return sHeaderRoleNames.value(section);
@@ -78,6 +79,7 @@ StockData *StockModel::getStockData(const QModelIndex &index)
     return tmp;
 }
 
+
 StockData *StockModel::getStockData(const QString &symbol)
 {
     StockData * tmp = NULL;
@@ -88,6 +90,11 @@ StockData *StockModel::getStockData(const QString &symbol)
     }
 
     return tmp;
+}
+
+const StockData &StockModel::getStockDataRef(int i) const
+{
+    return *(mStockList.at(i));
 }
 
 //QHash<int, QByteArray> StockModel::roleNames() const
@@ -102,14 +109,15 @@ void StockModel::addData(StockData * data)
     endInsertRows();
 }
 
-void StockModel::setHistoricalData(const QString &symbol, const QJsonArray &data)
-{
-    StockData * sd = getStockData(symbol);
-    if(sd)
-    {
-        sd->setHistoricalData(data);
-        emit historicalDataUpdated(symbol);
-    }
-}
+//void StockModel::setHistoricalData(const QString &symbol, const QJsonArray &data)
+//{
+//    StockData * sd = getStockData(symbol);
+//    if(sd)
+//    {
+//        StockHistoricalData shd(data);
+//        sd->setHistoricalData(shd);
+//        emit historicalDataUpdated(symbol);
+//    }
+//}
 
 

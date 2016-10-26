@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QString>
-#include <restclient.h>
+#include "src/net/restclient.h"
 
 class OAuthClient : public QObject
 {

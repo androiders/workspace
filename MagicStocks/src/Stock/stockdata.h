@@ -6,22 +6,24 @@
 #include <QString>
 //#include <QtQml>
 #include <QJsonObject>
-#include <stockhistoricaldata.h>
+#include "stockhistoricaldata.h"
 
 class StockData : public QObject
 {
     Q_OBJECT
-    Q_ENUMS(PriceChange)
+   // Q_ENUMS(PriceChange)
 
     //Q_PROPERTY(QString name READ name WRITE setName)
 //    Q_PROPERTY(float currentPrice READ getCurrentPrice WRITE setCurrentPrice NOTIFY currentPriceChanged)
 
 public:
-    explicit StockData(QObject *parent = 0);
+    StockData(const QString & name, const QString & symbol, QObject *parent = 0);
 
-    StockData(const QJsonObject & jsonData);
+    ~StockData(){}
 
-    StockData(const StockData & other);
+//    StockData(const QJsonObject & jsonData);
+
+//    StockData(const StockData & other);
 
 //    enum PriceChange
 //    {
@@ -31,27 +33,44 @@ public:
 //    };
 
 public:
+
+    int columntCount() const;
+
     void setName(const QString &value);
+    void setSymbol(const QString & symbol);
 
-    void setCurrentPrice(float value);
+    double getLatestClosingPrice() const;
 
-    void setHighest(float value);
+    double getLatestHighestPrice() const;
 
-    void setLowest(float value);
+    double getLatestLowestPrice() const;
 
-    void setChange(float pChange);
+    double getLatestOpeningPrice() const;
+
+    double getLatestSMA200() const;
+
+//    void setCurrentPrice(float value);
+
+//    void setHighest(float value);
+
+//    void setLowest(float value);
+
+//    void setChange(float pChange);
 
     QString name() const;
     QString symbol() const;
-    float getCurrentPrice() const;
-    float getHighest() const;
-    float getLowest() const;
-    float getPriceChange() const;
-    QString currency() const;
-    float getTwoHundredDayAverage() const;
-    float getFiftyDayAverage() const;
+//    float getCurrentPrice() const;
+//    float getHighest() const;
+//    float getLowest() const;
+//    float getPriceChange() const;
+//    QString currency() const;
+//    float getTwoHundredDayAverage() const;
+//    float getFiftyDayAverage() const;
 
-    void setHistoricalData(const QJsonArray & data);
+    void setHistoricalData(const StockHistoricalData & data);
+    int getHistoricalSize() const;
+
+    const StockHistoricalDataPoint & getHistoricalData(int index) const;
 
 //    const QVariant &operator[](std::size_t idx) const;
 //    QVariant &operator[](std::size_t idx);
@@ -64,32 +83,32 @@ signals:
 
 public slots:
 
-    QJsonArray getLabels(int size) const;
+//    QJsonArray getLabels(int size) const;
 
-    QJsonArray getValues(int size) const;
+//    QJsonArray getValues(int size) const;
 
 private:
 
     QString mName;
     QString mSymbol;
 
-    float currentPrice;
-    float dayLow;
-    float dayHigh;
+//    float currentPrice;
+//    float dayLow;
+//    float dayHigh;
 
-    float change;
+//    float change;
 
-    float twoHundredDayAverage;
-    float  fiftyDayAverage;
+//    float twoHundredDayAverage;
+//    float  fiftyDayAverage;
 
-    QString mCurrency;
+//    QString mCurrency;
 
     StockHistoricalData mHistoricalData;
 };
 
-Q_DECLARE_METATYPE(StockData*)
+//Q_DECLARE_METATYPE(StockData*)
 //Q_DECLARE_METATYPE(StockData::PriceChange)
-QML_DECLARE_TYPE(StockData*)
+//QML_DECLARE_TYPE(StockData*)
 //QML_DECLARE_TYPE(StockData::PriceChange)
 
 

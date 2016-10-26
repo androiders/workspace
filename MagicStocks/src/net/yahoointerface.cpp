@@ -115,8 +115,10 @@ void YahooInterface::getHistoricalStockData(const QString &symbol, const QDate f
     dp = getCallbackPair();
     rd.requestParams.append(dp);
 
-    qDebug() << "query historical data: " + query;
-    mHistoricalDataReqId = rc.requestGet(rd);
+    unsigned int rid = rc.requestGet(rd);
+    mHistoricalDataReqIds.insert(rid,true);
+    qDebug() << "query historical data: " + QString::number(rid) + query;
+
 }
 
 void YahooInterface::stockDataReady(const QString &data, unsigned int reqId)
@@ -127,8 +129,12 @@ void YahooInterface::stockDataReady(const QString &data, unsigned int reqId)
     if(reqId == mStockReadyReqId)
         parseStockData(data);
 
-    if(reqId == mHistoricalDataReqId)
+    if(mHistoricalDataReqIds.contains(reqId))
+    {
         parseHistoricalStockData(data);
+        mHistoricalDataReqIds.remove(reqId);
+        qDebug() << "received response " + QString::number(reqId);
+    }
 
 
 }
@@ -166,8 +172,21 @@ void YahooInterface::parseStockData(const QString &data)
 
 }
 
+void YahooInterface::searchFailed()
+{
+    emit stockSearchFailed("No results found");
+    return;
+
+}
+
 void YahooInterface::parseSearchResult(const QString &data)
 {
+    if(data.isEmpty())
+    {
+        searchFailed();
+        return;
+    }
+
     //brute force parsing!
     QString json = data;
     json.remove(0,QString("YAHOO.Finance.SymbolSuggest.ssCallback(").length());
@@ -188,6 +207,20 @@ void YahooInterface::parseSearchResult(const QString &data)
         resultArray = results.toArray();
     }
 
+    if(resultArray.size() == 0)
+    {
+        searchFailed();
+        return;
+    }
+
+    QStringList symbols;
+    foreach(QJsonValue val, resultArray)
+    {
+        if(val.toObject().keys().contains(("symbol")))
+            symbols.append(val.toObject().value("symbol").toString());
+    }
+
+    emit stockSearchReady(symbols);
     emit stockSearchReady(resultArray.toVariantList());
 
     //    qDebug() << "search result: " << data;
