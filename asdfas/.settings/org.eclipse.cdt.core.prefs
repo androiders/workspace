@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+environment/project/de.innot.avreclipse.configuration.app.debug.1465012445/BUILDARTIFACT/delimiter=\:
+environment/project/de.innot.avreclipse.configuration.app.debug.1465012445/BUILDARTIFACT/operation=replace
+environment/project/de.innot.avreclipse.configuration.app.debug.1465012445/BUILDARTIFACT/value=${ProjName}.elf
+environment/project/de.innot.avreclipse.configuration.app.debug.1465012445/append=true
+environment/project/de.innot.avreclipse.configuration.app.debug.1465012445/appendContributed=true
+environment/project/de.innot.avreclipse.configuration.app.release.1870100166/BUILDARTIFACT/delimiter=\:
+environment/project/de.innot.avreclipse.configuration.app.release.1870100166/BUILDARTIFACT/operation=replace
+environment/project/de.innot.avreclipse.configuration.app.release.1870100166/BUILDARTIFACT/value=${ProjName}.hex
+environment/project/de.innot.avreclipse.configuration.app.release.1870100166/append=true
+environment/project/de.innot.avreclipse.configuration.app.release.1870100166/appendContributed=true
